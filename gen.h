@@ -27,13 +27,13 @@ void gen_preambule(void);
 void gen_data_section(void);
 void gen_preambule_code(void);
 void gen_epilog_code(void);
-void gen_read(char*, int);
-void gen_write(char*, int);
-void gen_label_name(char*);
-void gen_label(char*);
-void gen_cond_jump(char*);
-void gen_incond_jump(char*);
+void gen_read(char *, int);
+void gen_write(char *, int);
+void gen_label_name(char *);
+void gen_label(char *);
+void gen_cond_jump(char *);
+void gen_incond_jump(char *);
 void gen_bool(int);
-void gen_bool_label_name(char*);
+void gen_bool_label_name(char *);
 
 #endif //_GEN_H_

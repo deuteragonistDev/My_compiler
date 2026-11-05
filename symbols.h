@@ -23,16 +23,18 @@
 #define MAX_TOKSZ 256
 
 // Entrada da tabela de simbolos de variaveis
-struct st_symbol_table_entry {
+struct st_symbol_table_entry
+{
   int type;
   char name[MAX_TOKSZ];
   void *value;
-  // int addr; 
+  // int addr;
 };
 typedef struct st_symbol_table_entry type_symbol_table_entry;
 
 // Tabela de simbolos de variaveis
-struct st_symbol_table_variables {
+struct st_symbol_table_variables
+{
   type_symbol_table_entry variable[MAX_SYMBOLS];
   int n_variables;
   struct st_symbol_table_variables *next;
@@ -40,32 +42,36 @@ struct st_symbol_table_variables {
 typedef struct st_symbol_table_variables type_symbol_table_variables;
 
 // Entrada da tabela de simbolos de strings
-struct st_sym_string_entry {
+struct st_sym_string_entry
+{
   char name[MAX_TOKSZ];
   char value[MAX_STRINGSZ];
 };
 typedef struct st_sym_string_entry type_symbol_table_string_entry;
 
 // tabela de simbolos de strings
-struct st_symbol_table_strings {
+struct st_symbol_table_strings
+{
   type_symbol_table_string_entry string[MAX_SYMBOLS];
   int n_strings;
 };
 typedef struct st_symbol_table_strings type_symbol_table_string;
 
 // Entrada da tabela de simbolos para funcoes
-struct st_symbol_func_entry {
-    int type;
-    char name[MAX_TOKSZ];
-    type_symbol_table_entry params[MAX_PARAMS];
-    int n_params;
+struct st_symbol_func_entry
+{
+  int type;
+  char name[MAX_TOKSZ];
+  type_symbol_table_entry params[MAX_PARAMS];
+  int n_params;
 };
 typedef struct st_symbol_func_entry type_symbol_table_func_entry;
 
 // Tabela de simbolos de funcoes
-struct st_symbol_func {
-    type_symbol_table_func_entry funcs[MAX_FUNCS];
-    int n_funcs;
+struct st_symbol_func
+{
+  type_symbol_table_func_entry funcs[MAX_FUNCS];
+  int n_funcs;
 };
 typedef struct st_symbol_func type_symbol_table_func;
 
@@ -77,7 +83,7 @@ type_symbol_table_string_entry *sym_string_find(char *s);
 type_symbol_table_string_entry *sym_string_declare(char *s);
 
 // implementar e verificar se esta correto.
-//Manipulacao da TS de funcoes
+// Manipulacao da TS de funcoes
 type_symbol_table_func_entry *sym_func_find(char *f_name);
 type_symbol_table_func_entry *sym_func_declare(char *name, int type, type_symbol_table_entry params[MAX_PARAMS], int n_params);
 
