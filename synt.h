@@ -21,7 +21,7 @@
 #include "symbols.h"
 
 /*
- * Gramatica: 
+ * Gramatica:
  *      program -> declarations  statements
  *      declarations-> declaration declarations | [vazio]
  *      declaration -> int id;
@@ -37,7 +37,6 @@
  *      E          --> expressões com numeros inteiros, cujo resultado final fica na pilha.
  */
 
-
 // Prototipos
 int match(int token_tag);
 int program(void);
@@ -47,7 +46,7 @@ int declaration(void);
 int statement(void);
 
 int B(void);
-int boolOperator(int*);
+int boolOperator(int *);
 
 int E();
 int ER();

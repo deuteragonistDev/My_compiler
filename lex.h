@@ -4,7 +4,7 @@
  * @brief Modulo do analisador lexico
  * @version 0.3
  * @date 2021-12-09
- * 
+ *
  */
 
 #ifndef _LEX_H_
@@ -18,8 +18,8 @@
 #include "struct_compiler.h"
 
 // Prototipos
-void initLex(char*);
+void initLex(char *);
 type_token *getToken();
-type_token *keyWordFind(char*);
+type_token *keyWordFind(char *);
 
 #endif //_LEX_H_

@@ -15,8 +15,8 @@
 #define MAX_CHAR 32
 #define MAX_TOKEN 32
 
-#define true 1  //por conveniencia, para facilitar leitura de codigo
-#define false 0 //por conveniencia, para facilitar leitura de codigo
+#define true 1  // por conveniencia, para facilitar leitura de codigo
+#define false 0 // por conveniencia, para facilitar leitura de codigo
 
 // Definicao dos codigos dos tokens
 #define ENDTOKEN '\0'
@@ -35,35 +35,34 @@
 #define DOUBLE_QUOTES '"'
 #define COMMA ','
 
-//KeyWords
+// KeyWords
 #define ID 256
-#define IF 257 // implementar // ok
-#define ELSE 258 // implementar // ok
-#define THEN 259 // implementar // não sei se é pra implementar não...
+#define IF 257    // implementar // ok
+#define ELSE 258  // implementar // ok
+#define THEN 259  // implementar // não sei se é pra implementar não...
 #define WHILE 260 // implementar // ok
-#define DO 261 // implementar // também não sei...
-#define READ 262  
-#define WRITE 263  
+#define DO 261    // implementar // também não sei...
+#define READ 262
+#define WRITE 263
 #define INT 264
 #define STRING 265
 #define FLOAT 266
 #define CHAR 267
-#define BEGIN 268 // ok 
-#define END 269 // ok
+#define BEGIN 268 // ok
+#define END 269   // ok
 
-
-//Operadores
+// Operadores
 #define ASSIGN '='
-#define EQUAL 270   // ==
-#define NE 271      // !=
-#define GE 272      // >=
-#define LE 273      // <=
+#define EQUAL 270 // ==
+#define NE 271    // !=
+#define GE 272    // >=
+#define LE 273    // <=
 #define GT '>'
 #define LT '<'
 
-
 // Definicao da estrutura de dados 'token'
-struct st_token {
+struct st_token
+{
     int tag;
     char lexema[MAX_CHAR];
     int value;
