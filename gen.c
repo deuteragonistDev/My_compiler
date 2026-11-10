@@ -14,7 +14,7 @@
 // Inclusao explicita de variaveis globais de outro contexto (symbols.h)
 extern type_symbol_table_variables global_symbol_table_variables;
 extern type_symbol_table_string symbol_table_string;
-char output_file_name[MAX_CHAR];
+char output_file_name[256];
 FILE *output_file;
 
 /**
@@ -52,7 +52,7 @@ void genMult()
     fprintf(output_file, ";Multiplicacao\n");
     fprintf(output_file, "pop rax\n");
     fprintf(output_file, "pop rbx\n");
-    fprintf(output_file, "imult rax,rbx\n");
+    fprintf(output_file, "imul rax,rbx\n");
     fprintf(output_file, "push rax\n");
 }
 
@@ -65,7 +65,8 @@ void genDiv()
     fprintf(output_file, ";Divisao\n");
     fprintf(output_file, "pop rbx\n");
     fprintf(output_file, "pop rax\n");
-    fprintf(output_file, "idiv rax,rbx\n");
+    fprintf(output_file, "cqo\n");
+    fprintf(output_file, "idiv rbx\n");
     fprintf(output_file, "push rax\n");
 }
 
@@ -77,8 +78,44 @@ void genDiv()
 void genNum(char num_string[MAX_TOKEN])
 {
     fprintf(output_file, ";Amarzenamento de numero\n");
-    fprintf(output_file, "mov rax,%s\n", num_string);
+    if (strchr(num_string, '.') != NULL)
+        fprintf(output_file, "mov eax,__float32__(%s)\n", num_string);
+    else
+        fprintf(output_file, "mov rax,%s\n", num_string);
     fprintf(output_file, "push rax\n");
+}
+
+void gen_id(char *name)
+{
+    fprintf(output_file, "mov eax,[%s]\n", name);
+    fprintf(output_file, "push rax\n");
+}
+
+void gen_string_value(char *name)
+{
+    fprintf(output_file, "lea rax,[rel %s]\n", name);
+    fprintf(output_file, "push rax\n");
+}
+
+void gen_assign(char *name, int type)
+{
+    fprintf(output_file, "pop rax\n");
+    if (type == CHAR)
+        fprintf(output_file, "mov [%s],al\n", name);
+    else if (type == STRING)
+        fprintf(output_file, "mov [%s],rax\n", name);
+    else if (type == INT || type == FLOAT)
+        fprintf(output_file, "mov [%s],eax\n", name);
+}
+
+void gen_call(char *label)
+{
+    fprintf(output_file, "call %s\n", label);
+}
+
+void gen_ret(void)
+{
+    fprintf(output_file, "ret\n");
 }
 
 /**
@@ -130,16 +167,16 @@ void gen_data_section(void)
         switch (global_symbol_table_variables.variable[i].type)
         { // Por enquanto gera endereco zero
         case INT:
-            fprintf(output_file, "dd \"%%d\", 4\n");
+            fprintf(output_file, "dd 0\n");
             break;
         case STRING:
-            fprintf(output_file, "db \"                \" \n");
+            fprintf(output_file, "times 256 db 0\n");
             break;
         case FLOAT:
-            fprintf(output_file, "dd \"%%lf\", 16\n");
+            fprintf(output_file, "dd 0\n");
             break;
         case CHAR:
-            fprintf(output_file, "dd \"%%c\", 1\n");
+            fprintf(output_file, "db 0\n");
             break;
         default:
             fprintf(output_file, "[ERRO] Tipo desconhecido.\n");
@@ -163,6 +200,7 @@ void gen_data_section(void)
  */
 void gen_preambule_code(void)
 {
+    fprintf(output_file, "default abs\n");
     fprintf(output_file, "\n\tsection .text\n");
     fprintf(output_file, "\tglobal main,_start\n");
     fprintf(output_file, "main:\n");
@@ -237,14 +275,13 @@ void gen_incond_jump(char *label)
  */
 void gen_bool(int oper)
 {
-    static int bool_label;
     char bool_label_name[MAX_CHAR];
     fprintf(output_file, ";Aplica operador booleano/exp.logica\n");
     fprintf(output_file, "pop rbx\n");
     fprintf(output_file, "pop rax\n");
     gen_bool_label_name(bool_label_name);
     fprintf(output_file, "mov rcx,1\n");
-    fprintf(output_file, "cmp eax,ebx");
+    fprintf(output_file, "cmp eax,ebx\n");
     switch (oper)
     {
     case EQUAL:
@@ -277,13 +314,8 @@ void gen_bool(int oper)
 
 void gen_bool_label_name(char *name)
 {
-    char str_name[MAX_CHAR];
-    char conv_value[16];
     static int nbool_labels = 0;
-    sprintf(conv_value, "%d", nbool_labels);
-    strcpy(str_name, name);
-    strcat(str_name, conv_value);
-    strcpy(name, str_name);
+    sprintf(name, "boollabel%d", nbool_labels);
     nbool_labels++;
 }
 
@@ -381,7 +413,7 @@ void gen_write(char *lexeme_of_id, int type)
     case STRING:
         fprintf(output_file, "\n;escreve valor string\n");
         fprintf(output_file, "mov edx,16\n");
-        fprintf(output_file, "mov ecx,%s\n", lexeme_of_id);
+        fprintf(output_file, "mov ecx,[%s]\n", lexeme_of_id);
         fprintf(output_file, "mov ebx,1\n");
         fprintf(output_file, "mov eax,4\n");
         fprintf(output_file, "int 0x80\n");

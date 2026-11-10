@@ -25,60 +25,62 @@
 // Entrada da tabela de simbolos de variaveis
 struct st_symbol_table_entry
 {
-  int type;
-  char name[MAX_TOKSZ];
-  void *value;
-  // int addr;
+	int type;
+	char name[MAX_TOKSZ];
+	void *value;
+	// int addr;
 };
 typedef struct st_symbol_table_entry type_symbol_table_entry;
 
 // Tabela de simbolos de variaveis
 struct st_symbol_table_variables
 {
-  type_symbol_table_entry variable[MAX_SYMBOLS];
-  int n_variables;
-  struct st_symbol_table_variables *next;
+	type_symbol_table_entry variable[MAX_SYMBOLS];
+	int n_variables;
+	struct st_symbol_table_variables *next;
 };
 typedef struct st_symbol_table_variables type_symbol_table_variables;
 
 // Entrada da tabela de simbolos de strings
 struct st_sym_string_entry
 {
-  char name[MAX_TOKSZ];
-  char value[MAX_STRINGSZ];
+	char name[MAX_TOKSZ];
+	char value[MAX_STRINGSZ];
 };
 typedef struct st_sym_string_entry type_symbol_table_string_entry;
 
 // tabela de simbolos de strings
 struct st_symbol_table_strings
 {
-  type_symbol_table_string_entry string[MAX_SYMBOLS];
-  int n_strings;
+	type_symbol_table_string_entry string[MAX_SYMBOLS];
+	int n_strings;
 };
 typedef struct st_symbol_table_strings type_symbol_table_string;
 
 // Entrada da tabela de simbolos para funcoes
 struct st_symbol_func_entry
 {
-  int type;
-  char name[MAX_TOKSZ];
-  type_symbol_table_entry params[MAX_PARAMS];
-  int n_params;
+	int type;
+	char name[MAX_TOKSZ];
+	char label[MAX_CHAR];
+	int implemented;
+	type_symbol_table_entry params[MAX_PARAMS];
+	int n_params;
 };
 typedef struct st_symbol_func_entry type_symbol_table_func_entry;
 
 // Tabela de simbolos de funcoes
 struct st_symbol_func
 {
-  type_symbol_table_func_entry funcs[MAX_FUNCS];
-  int n_funcs;
+	type_symbol_table_func_entry funcs[MAX_FUNCS];
+	int n_funcs;
 };
 typedef struct st_symbol_func type_symbol_table_func;
 
 // Prototipos
 type_symbol_table_entry *sym_find(char *s, type_symbol_table_variables *stv);
 type_symbol_table_entry *sym_declare(char *name, int type, void *value, // ou int addr,
-                                     type_symbol_table_variables *stv);
+									 type_symbol_table_variables *stv);
 type_symbol_table_string_entry *sym_string_find(char *s);
 type_symbol_table_string_entry *sym_string_declare(char *s);
 

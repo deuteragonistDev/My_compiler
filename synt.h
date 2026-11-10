@@ -43,7 +43,10 @@ int program(void);
 int declarations(void);
 int statements(void);
 int declaration(void);
+int declaration_var(char *name, int type);
+int declaration_func(char *name, int type);
 int statement(void);
+int func_code(void);
 
 int B(void);
 int boolOperator(int *);
