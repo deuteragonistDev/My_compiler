@@ -4,9 +4,12 @@
  * @brief Modulo do gerador da tabela de simbolos
  * @version 0.1
  * @date 2022-02-04
- * @note last modified 29.10.2026 by deuteragonistDev João Paulo Alves
+ * @note last modified 12.11.2026 by deuteragonistDev João Paulo Alves
  */
 #include "symbols.h"
+#include "gen.h"
+#include <stdio.h>
+
 
 // extern int nstringconsts;
 // int sympos = 0;
@@ -152,18 +155,20 @@ type_symbol_table_func_entry *sym_func_find(char *f_name)
 type_symbol_table_func_entry *sym_func_declare(char *name, int type, type_symbol_table_entry params[MAX_PARAMS], int n_params)
 {
   int i, pos;
-  if (symbol_table_func.n_funcs < MAX_FUNCS)
+  if (symbol_table_func.n_funcs < MAX_FUNCS) // verifica se fda pra criar mais funçao
   {
-    pos = symbol_table_func.n_funcs;
-    strcpy(symbol_table_func.funcs[pos].name, name);
-    symbol_table_func.funcs[pos].type = type;
+    pos = symbol_table_func.n_funcs; //recebe a posiçao livre (que tambem significa que é a ultima)
+    strcpy(symbol_table_func.funcs[pos].name, name); //copia o nome para a tabela de funcoes
+    symbol_table_func.funcs[pos].type = type; //copia o tipo para a tabela de funcoes
     for (i = 0; i < n_params; i++)
     {
-      strcpy(symbol_table_func.funcs[pos].params[i].name, params[i].name);
-      symbol_table_func.funcs[pos].params[i].type = params[i].type;
+      strcpy(symbol_table_func.funcs[pos].params[i].name, params[i].name); //copia os parametros para a tabela de funções com base no numero de parametros "i"
+      symbol_table_func.funcs[pos].params[i].type = params[i].type; //copia o tipo dos parametros para a tabela de funções 
     }
     symbol_table_func.funcs[pos].n_params = n_params;
     symbol_table_func.n_funcs++;
+    sprintf(symbol_table_func.funcs[pos].label, "label%d", pos);
+    gen_label_name(symbol_table_func.funcs[pos].label); // AGORA GERA A LABEL GENERICA PARA A FUNÇÂO 
     return &symbol_table_func.funcs[pos];
   }
   else

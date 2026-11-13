@@ -4,6 +4,7 @@
  * @brief Modulo do gerador da tabela de simbolos
  * @version 0.1
  * @date 2022-02-04
+ * @note last modified 12.11.2026 by deuteragonistDev 
  */
 
 #ifndef _SYMBOLS_H_
@@ -62,6 +63,7 @@ struct st_symbol_func_entry
 {
   int type;
   char name[MAX_TOKSZ];
+  char label[MAX_CHAR]; // 12.11.2026 -> incluir para o codigo gerado 
   type_symbol_table_entry params[MAX_PARAMS];
   int n_params;
 };
