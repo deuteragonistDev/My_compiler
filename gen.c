@@ -4,7 +4,7 @@
  * @brief Codificacao do modulo gerador de codigo
  * @version 0.2
  * @date 2022-02-04
- * @note was the last modification: 2026-10-14 by João Paulo
+ * @note was the last modification: 13.11.2026 by João Paulo
  *
  */
 
@@ -286,6 +286,15 @@ void gen_bool_label_name(char *name)
     strcpy(name, str_name);
     nbool_labels++;
 }
+
+void gen_jal_label_name(char *name){
+    fprintf(output_file, "jal %s\n", name);
+}
+
+void gen_jr_ra(void){
+    fprintf(output_file, "jr ra\n");
+}
+
 
 /**
  * @brief Gera codigo para o comando READ

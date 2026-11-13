@@ -4,7 +4,7 @@
  * @brief Modulo do gerador de codigo
  * @version 0.3
  * @date 2022-02-04
- *
+ * @note last modified 13.11.2026 by deuteragonistDEV
  */
 #ifndef _GEN_H_
 #define _GEN_H_
@@ -30,6 +30,8 @@ void gen_epilog_code(void);
 void gen_read(char *, int);
 void gen_write(char *, int);
 void gen_label_name(char *);
+void gen_jal_label_name(char *);
+void gen_jr_ra(void);
 void gen_label(char *);
 void gen_cond_jump(char *);
 void gen_incond_jump(char *);
