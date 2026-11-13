@@ -4,7 +4,7 @@
  * @brief Codificacao do modulo do analisador sintatico
  * @version 0.4
  * @date 2022-02-04
- * @note last modified 2026-10-29 by João Paulo
+ * @note last modified 12.11.2026 by João Paulo
  */
 
 // Inclusao do cabecalho
@@ -59,11 +59,103 @@ int program(void)
     // #END implementar não sei como
     match(END);
     // #codigo das funções implementar tambem
+
     gen_epilog_code();
+    while(func_code());
 
     gen_data_section(); // Chamada do gerador de codigo para declaracao de
                         // variaveis
     return true;
+}
+
+int func_code(void){
+    int func_type, n_param = 0, type_param;
+    char func_name[MAX_CHAR];
+    type_symbol_table_func_entry *search_func_symbol;
+
+    func_type = lookahead->tag;
+    if (func_type == INT || func_type == FLOAT || func_type == CHAR || func_type == STRING){
+        match(func_type);
+        if(lookahead->tag == ID){
+            strcpy(func_name, lookahead->lexema); 
+            search_func_symbol = sym_func_find(func_name);
+            if (search_func_symbol != NULL){
+                match(ID);
+                if(lookahead->tag == OPEN_PAR){
+                    match(OPEN_PAR);
+                    while(lookahead->tag != CLOSE_PAR){
+                        type_param = lookahead->tag;
+                        if (type_param != INT && type_param != FLOAT && type_param != CHAR && type_param != STRING){
+                                printf("[ERRO] TIPO DE VARIAVEL NA TS DECLARADA DESCONHECIDA.\n");
+                                return false;
+                        }else{
+
+                            match(type_param);
+                            if(lookahead->tag == ID){
+                                type_symbol_table_entry *search_symbol = sym_find(lookahead->lexema, &global_symbol_table_variables);
+                                if (search_symbol != NULL){
+                                    if(search_symbol->type == type_param){
+                                        match(ID);
+                                        if(lookahead->tag == COMMA){
+                                            match(COMMA);         
+                                        }else if (lookahead->tag != CLOSE_PAR){     
+                                            printf("[ERRO] lexema processado: '%s', tag processada '%d'\n", lookahead->lexema, lookahead->tag);
+                                            return false;   
+                                        }
+                                    }else{
+                                        printf("[ERRO] Tipo de parametro não coincide com o prototipo.");
+                                        return false;
+                                    }
+                                }else{
+                                    printf("[ERRO] Variavel '%s' do parametro da funçao '%s' não existe! Não esqueça de declara-la!\n",lookahead->lexema, func_name);
+                                    return false;
+                                }
+                            }else{
+                                printf("[ERRO] Esperado um ID para o tipo de parametro '%d' na funçao '%s' ",type_param, func_name);
+                                return false;
+                            }
+                        }
+                        n_param++;
+                        if(n_param > search_func_symbol->n_params){
+                            printf("[ERRO] Quantidade de parametros não coincide. Esperado '%d', processado'%d'\n",search_func_symbol->n_params, n_param);
+                            return false;
+                        }    
+                    }
+                    if(n_param != search_func_symbol->n_params){
+                        printf("[ERRO] Quantidade de parametros não coincide. Esperado '%d', processado'%d'\n",search_func_symbol->n_params, n_param);
+                        return false;
+                    }
+                    match(CLOSE_PAR);
+                    if(lookahead->tag == BEGIN){
+                        match(BEGIN);
+                        gen_label(search_func_symbol->label);
+                        //ALGO QUE REPRESENTE O CODIGO ACHO QUE STATEMENTS
+                        statements();
+
+                        match(END);
+
+                        gen_jr_ra();
+                        return true;
+                    }
+                }else{
+                    printf("[ERRO] Esperado abre chaves \"(\"\n");
+                    return false;
+                }
+            }else{
+                printf("[ERRO] Declaraçâo de funçao nao prototipada\n");
+                return false;
+            }
+
+        }else{
+            printf("[ERRO] Esperado o nome da função");
+            return false;
+        }
+    }else if (lookahead->tag == ENDTOKEN) { 
+        return false; 
+    }else{
+        printf("[ERRO] Tipo da função não existente\n");
+        return false;
+    }
 }
 
 /**
@@ -140,6 +232,7 @@ int declaration(void)
                         match(ID);
                         parameters[n_params].type = p_type;
                         strcpy(parameters[n_params].name, p_name);
+                        sym_declare(parameters[n_params].name, parameters[n_params].type, NULL, &global_symbol_table_variables); // ADICIONAR PARAMETROS NA TS DE VARIAVEISs *stv)
                         n_params++;
                         if (lookahead->tag == COMMA)
                         {
@@ -410,7 +503,7 @@ int statement(void)
             }
 
             // ESTA SEÇÂO ESTA MOVIDA À GAMBIARRAS!! NADA AQUI DEVE SER MOVIDO UMA LINHA
-            // este aqui deve ser a gosto de dev que pega sistema legado
+            // este aqui deve ser o gosto de dev que pega sistema legado
         }
         else if (lookahead->tag == OPEN_PAR)
         {
@@ -509,6 +602,7 @@ int statement(void)
                 }
                 match(CLOSE_PAR);
                 match(SEMICOLON);
+                gen_jal_label_name(function->label); // chama a geração de codigo jal para a função chamada
                 return true;
                 // TODO: Verifica se lista de parametros eh compativel com declaracao
             }
@@ -756,7 +850,7 @@ int main(int argc, char *argv[])
     {
         printSTString();
         printSTVariables(&global_symbol_table_variables);
-        gen_data_section(); // Gera codigo da secao de dados
+        printSTFunc();
         fclose(output_file);
     }
     return 1;

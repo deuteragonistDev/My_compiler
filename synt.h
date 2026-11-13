@@ -40,6 +40,7 @@
 // Prototipos
 int match(int token_tag);
 int program(void);
+int func_code(void);
 int declarations(void);
 int statements(void);
 int declaration(void);
