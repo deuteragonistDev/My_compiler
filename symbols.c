@@ -269,8 +269,8 @@ void printSTFunc()
     printf("\tFuncao[%d].parametros:\n", i);
     for (j = 0; j < symbol_table_func.funcs[i].n_params; j++)
     {
-      printf("\t\ttipo: %d", symbol_table_func.funcs[i].params[j].type);
-      printf("\t\tnome: %s", symbol_table_func.funcs[i].params[j].name);
+      printf("\t\ttipo: %d\n", symbol_table_func.funcs[i].params[j].type);
+      printf("\t\tnome: %s\n", symbol_table_func.funcs[i].params[j].name);
     }
   }
 }
