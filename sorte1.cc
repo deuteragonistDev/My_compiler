@@ -12,7 +12,7 @@ begin
     taxa = 3.14;
     curso = "Computacao";
     conceito = 'A';
-    somaletra = 10;
+    somaletra = 10 + 10;
 
     if (valor == 10)
     begin

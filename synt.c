@@ -790,6 +790,10 @@ int TR()
     {
         return true;
     }
+    else if (lookahead->tag == SEMICOLON)
+    {
+        return true;
+    }
     else
     {
         return false;
