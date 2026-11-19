@@ -433,16 +433,15 @@ int statement(void)
 
                 ok1 = match(ASSIGN);
                 type = search_symbol->type;
-                // Se sim, verifica se o proximo token é INT, FLOAT, CHAR ou STRING
-                if (lookahead->tag == NUM_INT)
+                // Se sim, verifica se o proximo token é expressao numerica, CHAR ou STRING
+                if (lookahead->tag == NUM_INT || lookahead->tag == NUM_FLOAT || lookahead->tag == OPEN_PAR)
                 {
-                    //     Verifica se o tipo do token é compativel com o tipo da variavel na TS
-                    if (type == INT)
+                    if ((lookahead->tag == NUM_INT && type == INT) ||
+                        (lookahead->tag == NUM_FLOAT && type == FLOAT))
                     {
-                        //     atribui o valor para a variavel na TS
-                        search_symbol->value = lookahead->lexema;
-                        match(NUM_INT);
-                        ok2 = match(SEMICOLON);
+                        ok2 = E();
+                        ok2 = ok2 && match(SEMICOLON);
+                        return ok1 && ok2;
                     }
                     else
                     {
@@ -450,26 +449,42 @@ int statement(void)
                         printf("[ERRO] TIPO %d NAO COINCIDE COM A VARIAVEL NA TS: Esperado %d\n", lookahead->tag, type);
                         return false;
                     }
-                    return ok1 && ok2;
                 }
-                else if (lookahead->tag == NUM_FLOAT)
-                {
-                    //     Verifica se o tipo do token é compativel com o tipo da variavel na TS
-                    if (type == FLOAT)
-                    {
-                        //     atribui o valor para a variavel na TS
-                        search_symbol->value = lookahead->lexema;
-                        match(NUM_FLOAT);
-                        ok2 = match(SEMICOLON);
-                    }
-                    else
-                    {
-                        // Se nao, gera erro e retorna falso
-                        printf("[ERRO] TIPO %d NAO COINCIDE COM A VARIAVEL NA TS: Esperado %d\n", lookahead->tag, type);
-                        return false;
-                    }
-                    return ok1 && ok2;
-                }
+                //return false;
+                // {
+                //     //     Verifica se o tipo do token é compativel com o tipo da variavel na TS
+                //     if (type == INT)
+                //     {
+                //         //     atribui o valor para a variavel na TS
+                //         search_symbol->value = lookahead->lexema;
+                //         match(NUM_INT);
+                //         ok2 = match(SEMICOLON);
+                //     }
+                //     else
+                //     {
+                //         // Se nao, gera erro e retorna falso
+                //         printf("[ERRO] TIPO %d NAO COINCIDE COM A VARIAVEL NA TS: Esperado %d\n", lookahead->tag, type);
+                //         return false;
+                //     }
+                //     return ok1 && ok2;
+                // }
+                // else if (lookahead->tag == NUM_FLOAT)
+                // {
+                //     //     Verifica se o tipo do token é compativel com o tipo da variavel na TS
+                //     if (type == FLOAT)
+                //     {
+                //         //     atribui o valor para a variavel na TS
+                //         search_symbol->value = lookahead->lexema;
+                //         match(NUM_FLOAT);
+                //         ok2 = match(SEMICOLON);
+                //     }
+                //     else
+                //     {
+                //         // Se nao, gera erro e retorna falso
+                //         printf("[ERRO] TIPO %d NAO COINCIDE COM A VARIAVEL NA TS: Esperado %d\n", lookahead->tag, type);
+                //         return false;
+                //     }
+                
                 else if (lookahead->tag == STRING || lookahead->tag == CHAR)
                 {
                     if (lookahead->tag == type)
@@ -718,7 +733,7 @@ int ER()
         //     return true;
         // OU PODEMOS FAZER EM UM UNICO ELSE IF.
     }
-    else if (lookahead->tag == ')' || lookahead->tag == '*' || lookahead->tag == '/' || lookahead->tag == ENDTOKEN)
+    else if (lookahead->tag == ')' || lookahead->tag == '*' || lookahead->tag == '/' || lookahead->tag == ENDTOKEN || lookahead->tag == SEMICOLON)
     {
         return true;
     }
